@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "amd",
+    "sourceMap": false,
+    "typeRoots": ["node_modules/@types"],
+    "noImplicitAny": false,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/*.ts",
+    "src/**/*.ts"
+  ]
+}

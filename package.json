@@ -1,0 +1,25 @@
+{
+  "name": "pasty-cli",
+  "version": "0.0.1",
+  "description": "Upload code or small files anonymously that are stored encrypted on S3.",
+  "scripts": {
+    "build": "tsc -p . --outDir dist/",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./main.ts",
+    "server": "npm run build && node dist/main.js",
+    "prepublishOnly": "tsc -p . --outDir dist/"
+  },
+  "dependencies": {
+    "pasty-core": "brhoades/pasty-core"
+  },
+  "devDependencies": {
+    "commander": "^2.11.0",
+    "nodemon": "^1.11.0",
+    "typescript": "^2.3.3"
+  },
+  "main": "dist/main.js",
+  "files": [
+    "dist",
+    "src",
+    "tsconfig.json"
+  ]
+}
