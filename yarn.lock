@@ -932,8 +932,8 @@ parse-glob@^3.0.4:
     is-glob "^2.0.0"
 
 pasty-core@brhoades/pasty-core:
-  version "0.0.2"
-  resolved "https://codeload.github.com/brhoades/pasty-core/tar.gz/88417468a9635ec20ac6c311a44fc3725b59b6e7"
+  version "0.0.4"
+  resolved "https://codeload.github.com/brhoades/pasty-core/tar.gz/95059d2e7c0985dac4197b035346ec39dcc848c7"
   dependencies:
     crypto-js "^3.1.9-1"
 
