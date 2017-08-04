@@ -25,7 +25,17 @@ export function uploadPayload(payload, cb: (url: string) => void): void {
   });
 }
 
-export function uploadSingleFile(program): void {
+export function createPayload(data: string, name: string = "",
+                              mime: string = "application/octet-stream", type = "file") {
+  return {
+    name,
+    data,
+    type,
+    mime,
+  };
+}
+
+export function singleFile(program): void {
   if (program.args.length > 1) {
     error('Only multiple code files can be uploaded as part of a single paste.');
   }
@@ -35,12 +45,18 @@ export function uploadSingleFile(program): void {
 
   let mimeString: string = lookup(file);
 
-  const payload = {
-    name: basename(file),
-    data,
-    mime: mimeString,
-    type: "file"
-  };
+  uploadPayload(createPayload(data, basename(file), mimeString), console.log);
+}
 
-  uploadPayload(payload, console.log);
+export function stdinArbitraryData(program): void {
+  let data: Buffer;
+
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+
+  process.stdin.on('data', chunk => data += chunk);
+
+  process.stdin.on('end', () => {
+    uploadPayload(createPayload(data.toString('base64')), console.log);
+  });
 }
