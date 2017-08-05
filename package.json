@@ -4,7 +4,6 @@
   "description": "Upload code or small files anonymously that are stored encrypted on S3.",
   "scripts": {
     "build": "tsc -p . --outDir dist/",
-    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./main.ts",
     "server": "npm run build && node dist/main.js",
     "prepublishOnly": "tsc -p . --outDir dist/"
   },

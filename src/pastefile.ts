@@ -21,7 +21,12 @@ export function uploadPayload(payload, cb: (url: string) => void): void {
       error(`Status code HTTP${resp.statusCode} ${resp.statusMessage}`);
     }
 
-    cb(`http://p.brod.es/#view/${encodeURIComponent(body.filename)}/${encodeURIComponent(encryptedData.key)}`);
+    let baseServer: string = 'http://p.brod.es';
+    if (process.env.LOCAL_SERVER) {
+      baseServer = process.env.LOCAL_SERVER;
+    }
+
+    cb(`${process.env.LOCAL_SERVER}/#/view/${encodeURIComponent(body.filename)}/${encodeURIComponent(encryptedData.key)}`);
   });
 }
 
