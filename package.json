@@ -1,6 +1,6 @@
 {
   "name": "pasty-cli",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Upload code or small files anonymously that are stored encrypted on S3.",
   "scripts": {
     "build": "tsc -p . --outDir dist/",

@@ -1,5 +1,9 @@
 # Pasty CLI Changelog
 
+## 0.1.0
+Can now upload arbitrary number of files.
+Using proper pasty API.
+
 ## 0.0.4
 Added sha-bang to main.ts
 
