@@ -1,13 +1,13 @@
 import { post } from 'request';
 import { lookup } from 'mime';
 import { basename, resolve } from 'path';
-import { encryptFile } from 'pasty-core';
+import { encryptFile, Paste, PasteFile, CodeFile } from 'pasty-core';
 
 import { error } from './util';
 import { getFileContentsSync } from './io';
 
 export function uploadPayload(payload, cb: (url: string) => void): void {
-  let encryptedData: { data: string, key: string } = encryptFile(JSON.stringify(payload), 32);
+  let encryptedData: { data: string, key: string } = encryptFile(payload, 32);
   
   post({
     method: 'POST',
@@ -25,31 +25,28 @@ export function uploadPayload(payload, cb: (url: string) => void): void {
   });
 }
 
-export function createPayload(data: string, name: string = "",
-                              mime: string = "application/octet-stream", type = "file") {
-  return {
-    name,
-    data,
-    type,
-    mime,
-  };
-}
+export function uploadFiles(program): void {
+  const paste: Paste = Paste.empty()
 
-export function singleFile(program): void {
-  if (program.args.length > 1) {
-    error('Only multiple code files can be uploaded as part of a single paste.');
-  }
+  paste.files = program.args.map((relativeFN, i) => {
+    let filename: string = resolve(relativeFN);
+    let data: Buffer = getFileContentsSync(filename, error);
+    let mimeString: string = lookup(filename);
 
-  let file: string = resolve(program.args[0]);
-  let data: string = getFileContentsSync(file, error).toString('base64');
+    if (mimeString == 'text/plain') {
+      // TODO: arguments to disable auto
+      return new CodeFile(i, basename(filename), data.toString('utf8'), 'auto');
+    }
 
-  let mimeString: string = lookup(file);
+    return new PasteFile(i, basename(filename), data.toString('base64'), mimeString);
+  });
 
-  uploadPayload(createPayload(data, basename(file), mimeString), console.log);
+  uploadPayload(paste.serialize(), console.log);
 }
 
 export function stdinArbitraryData(program): void {
   let data: Buffer;
+  const paste: Paste = Paste.empty()
 
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
@@ -57,6 +54,7 @@ export function stdinArbitraryData(program): void {
   process.stdin.on('data', chunk => data += chunk);
 
   process.stdin.on('end', () => {
-    uploadPayload(createPayload(data.toString('base64')), console.log);
+    paste.files.push(new CodeFile(0, '', data.toString('base64'), 'auto'));
+    uploadPayload(paste.serialize(), console.log);
   });
 }
