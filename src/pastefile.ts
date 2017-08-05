@@ -33,9 +33,9 @@ export function uploadFiles(program): void {
     let data: Buffer = getFileContentsSync(filename, error);
     let mimeString: string = lookup(filename);
 
-    if (mimeString == 'text/plain') {
+    if (CodeFile.isReadable(mimeString)) {
       // TODO: arguments to disable auto
-      return new CodeFile(i, basename(filename), data.toString('utf8'), 'auto');
+      return new CodeFile(i, basename(filename), data.toString('utf8'), 'auto', mimeString);
     }
 
     return new PasteFile(i, basename(filename), data.toString('base64'), mimeString);
