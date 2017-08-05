@@ -1,5 +1,9 @@
 # Pasty CLI Changelog
 
+## 0.1.1
+* Added LOCAL_SERVER environment variable support for overriding pasty http server.
+* Encoding fixes, pasty-core 0.1.2
+
 ## 0.1.0
 Can now upload arbitrary number of files.
 Using proper pasty API.
