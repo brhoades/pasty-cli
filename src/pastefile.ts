@@ -26,7 +26,7 @@ export function uploadPayload(payload, cb: (url: string) => void): void {
       baseServer = process.env.LOCAL_SERVER;
     }
 
-    cb(`${process.env.LOCAL_SERVER}/#/view/${encodeURIComponent(body.filename)}/${encodeURIComponent(encryptedData.key)}`);
+    cb(`${baseServer}/#/view/${encodeURIComponent(body.filename)}/${encodeURIComponent(encryptedData.key)}`);
   });
 }
 
