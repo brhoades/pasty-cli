@@ -1,27 +1,39 @@
 import { post } from 'request';
 import { lookup } from 'mime';
 import { basename, resolve } from 'path';
-import { encryptFile, Paste, PasteFile, CodeFile } from 'pasty-core';
+import { CodeFile, encryptFile, Paste, PasteFile } from 'pasty-core';
 
 import { error } from './util';
 import { getFileContentsSync } from './io';
 
-export function uploadPayload(payload, cb: (url: string) => void): void {
-  let encryptedData: { data: string, key: string } = encryptFile(payload, 32);
+export function uploadPayload(paste: Paste, cb: (url: string) => void): void {
+  let encryptedData: { data: Buffer, key: string } = encryptFile(paste);
   
   post({
+    body: encryptedData.data,
+    har: {
+      headers: [
+        {
+          name: 'content-type',
+          value: 'application/octet-stream',
+        },
+      ]
+    },
+    json: true,
     method: 'POST',
     url: 'https://pasty.brod.es/paste',
-    json: true,
-    form: {
-      data: encryptedData.data,
-    }
   }, (err, resp, body) => {
     if (resp.statusCode != 200) {
       error(`Status code HTTP${resp.statusCode} ${resp.statusMessage}`);
     }
 
-    let baseServer: string = 'http://p.brod.es';
+    if (!body.filename) {
+      console.error('Server did not provide a valid response.');
+      console.dir(body);
+      return;
+    }
+
+    let baseServer: string = 'https://p.brod.es';
     if (process.env.LOCAL_SERVER) {
       baseServer = process.env.LOCAL_SERVER;
     }
@@ -46,7 +58,7 @@ export function uploadFiles(program): void {
     return new PasteFile(i, basename(filename), data.toString('base64'), mimeString);
   });
 
-  uploadPayload(paste.serialize(), console.log);
+  uploadPayload(paste, console.log);
 }
 
 export function stdinArbitraryData(program): void {
@@ -60,6 +72,6 @@ export function stdinArbitraryData(program): void {
 
   process.stdin.on('end', () => {
     paste.files.push(new CodeFile(0, '', data.toString('base64'), 'auto'));
-    uploadPayload(paste.serialize(), console.log);
+    uploadPayload(paste, console.log);
   });
 }
