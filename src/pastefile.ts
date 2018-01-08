@@ -11,25 +11,20 @@ export function uploadPayload(paste: Paste, cb: (url: string) => void): void {
   
   post({
     body: encryptedData.data,
-    har: {
-      headers: [
-        {
-          name: 'content-type',
-          value: 'application/octet-stream',
-        },
-      ]
+    headers: {
+      'Content-type': 'application/octet-stream',
     },
-    json: true,
     method: 'POST',
     url: 'https://pasty.brod.es/paste',
   }, (err, resp, body) => {
     if (resp.statusCode != 200) {
       error(`Status code HTTP${resp.statusCode} ${resp.statusMessage}`);
     }
+    const data = JSON.parse(body);
 
-    if (!body.filename) {
+    if (!data.filename) {
       console.error('Server did not provide a valid response.');
-      console.dir(body);
+      console.dir(data);
       return;
     }
 
@@ -38,7 +33,7 @@ export function uploadPayload(paste: Paste, cb: (url: string) => void): void {
       baseServer = process.env.LOCAL_SERVER;
     }
 
-    cb(`${baseServer}/#/view/${encodeURIComponent(body.filename)}/${encodeURIComponent(encryptedData.key)}`);
+    cb(`${baseServer}/#/view/${encodeURIComponent(data.filename)}/${encodeURIComponent(encryptedData.key)}`);
   });
 }
 

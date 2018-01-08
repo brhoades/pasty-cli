@@ -1,5 +1,11 @@
 # Pasty CLI Changelog
 
+## 0.2.0
+* pasty-core 0.4.0 consumption
+ * Now uses new BSON submission API
+* AGPL3+
+* Error messages for bad body response.
+
 ## 0.1.3
 * Url generation fix (wrong name).
 
