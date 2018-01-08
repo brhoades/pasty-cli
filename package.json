@@ -30,5 +30,6 @@
   ],
   "bin": {
     "pasty": "dist/main.js"
-  }
+  },
+  "license": "AGPL-3.0+"
 }
